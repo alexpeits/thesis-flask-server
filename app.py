@@ -21,7 +21,9 @@ def index():
         print req
         cur.execute("""SELECT * FROM {} WHERE datetime >= (NOW() - INTERVAL {})""".format(SQL_TABLE, req))
         data = cur.fetchall()
-        arr_send = [[str(time.mktime(i[0].timetuple())), str(int(i[1])), str(int(i[2]))]
+        arr_send = [[str(time.mktime(i[0].timetuple())),
+                     str(int(i[1])),
+                     str(int(i[2]))]
                     for i in data]
         data_send = json.dumps(arr_send)
         return data_send
