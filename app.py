@@ -25,8 +25,7 @@ def index():
                     for i in data]
         data_send = json.dumps(arr_send)
         return data_send
-    else:
-        return render_template('index.html')
+    return render_template('index.html')
 
 #for testing purposes
 @app.route('/values', methods=['GET', 'POST'])
