@@ -5,4 +5,4 @@ thesis-flask-server
 
 Screenshot:
 
-[![WebGUI](https://raw.githubusercontent.com/alexpeits/thesis-flask-server/master/screenshot.png)]
+![WebGUI](https://raw.githubusercontent.com/alexpeits/thesis-flask-server/master/screenshot.png)
