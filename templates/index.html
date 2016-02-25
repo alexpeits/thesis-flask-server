@@ -1,23 +1,27 @@
-<!DOCTYPE html>
-<html>
-<title>Light control panel</title>
-<head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+{% extends "base.html" %}
+{% block title %}Admin panel{% endblock %}
+{% block head %}
+{{super()}}
+{% block favicon %}<link rel="icon" type="image/png" href="../static/bulb.png">{% endblock %}
+{% endblock %}
+{% block scripts %}
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
 <script src="../static/js/mqttws31_new.js" type="text/javascript"></script>
-<script src="../static/js/scripts.js" type="text/javascript"></script>
+<!--<script src="../static/js/scripts2.js" type="text/javascript"></script>-->
+<script src="{{ url_for('static', filename='js/scripts2.js') }}"></script>
 <script src="http://code.highcharts.com/highcharts.js"></script>
 <script src="http://code.highcharts.com/modules/exporting.js"></script>
+{{super()}}
+{% endblock %}
+
+{% block styles %}
+{{super()}}
 <style>
 .vertical_line{height:400px; width:1px; background:#999999;}
-legend {color:#555555; font-style: italic;}
-#header {background-color:#CCCCCC; color:#444444; text-align:center;
-    margin-bottom:15px; padding:1px; border-radius: 10px 10px 10px 10px;}
 </style>
+{% endblock %}
 
-
-</head>
-<body>
+{% block page_content %}
 <div id="header">
 <h1>Control panel</h1>
 </div>
@@ -26,21 +30,21 @@ legend {color:#555555; font-style: italic;}
 <div style="float:left; width:20%; margin-top:5px;"> 
 
 <fieldset>
-    <form onsubmit="return false" oninput="level.value = thresh_val.valueAsNumber">
+    <form onsubmit="return false" oninput="level.value = thresh.valueAsNumber">
 
         Threshold: 
-          <input name="thresh_val" id="thresh_val" type="range" min="0" max="800" value="0"> 
-          <output for="thresh_val" name="level" id="showselect"></output>
+          <input id="thresh" type="range" min="0" max="800" value="0"> 
+          <output for="thresh" name="level" id="showselect"></output>
         </form><br>
 
         Light 6: 
-        <select type="text" id="light_06_state_val" name="light_06_state">
+        <select type="text" id="light_06_state" name="light_06_state">
             <option value="auto">Auto</option>
             <option value="on">On</option>
             <option value="off">Off</option>
         </select>
 
-        <select type="text" id="light_06_int_val" name="light_06_int">
+        <select type="text" id="light_06_int" name="light_06_int">
             <option value="0">0%</option>
             <option value="10">10%</option>
             <option value="20">20%</option>
@@ -56,13 +60,13 @@ legend {color:#555555; font-style: italic;}
         <br>
 
         Light 7: 
-        <select type="text" id="light_07_state_val" name="light_07_state">
+        <select type="text" id="light_07_state" name="light_07_state">
             <option value="auto">Auto</option>
             <option value="on">On</option>
             <option value="off">Off</option>
         </select>
 
-        <select type="text" id="light_07_int_val" name="light_07_int">
+        <select type="text" id="light_07_int" name="light_07_int">
             <option value="0">0%</option>
             <option value="10">10%</option>
             <option value="20">20%</option>
@@ -94,31 +98,23 @@ legend {color:#555555; font-style: italic;}
     Historical data:
     <select id="timeinterval" name="time">
     <option value="">Select interval:</option>
-    <option value="1 hour">1 hour</option>
-    <option value="5 hour">5 hours</option>
-    <option value="1 day">1 day</option>
-    <option value="5 day">5 days</option>
-    <option value="2 week">2 weeks</option>
-    <option value="1 month">1 month</option>
-    <option value="1 year">1 year</option>
+    <option value="1 hour" name="last hour">1 hour</option>
+    <option value="5 hour" name="last 5 hours">5 hours</option>
+    <option value="1 day" name="last day">1 day</option>
+    <option value="5 day" name="last 5 days">5 days</option>
+    <option value="2 week" name="last 2 weeks">2 weeks</option>
+    <option value="1 month" name="last month">1 month</option>
+    <option value="1 year" name="last year">1 year</option>
     </select>
     <br>
     </select><br>
-
-    <label>Data display interval:</label>
-      <input type="text" name="name" id="showtime" readonly />      
-    </label>
-    <br><br>
-
 
     <input type="button" id="realtime" value="Real Time Data">
 </fieldset>
 
 </div>
 
-<!--
-<div style="float:left;margin:10px;" class="vertical_line"></div>
--->
+
 
 <div style="float:right; width:75%; margin-right:40px; margin-top:20px;">
 <div id="chart_hist" style="height: 400px; margin: 0 auto"></div>
@@ -126,5 +122,4 @@ legend {color:#555555; font-style: italic;}
 </div>
 
 </div>
-</body>
-</html>
+{% endblock %}

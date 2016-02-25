@@ -1,5 +1,37 @@
 $(document).ready(function() {
-//Highcharts with mySQL and PHP - Ajax101.com
+    
+    $.getJSON("initvals", function(init) {
+        $.each(init, function(key, value){
+            if (key !== 'thresh') {
+                $("#"+key).val(value);
+            }
+        });
+        th = init["thresh"]
+        $("#thresh").prop("value", th);
+        $("#showthresh").val(th);
+        $("#showselect").val(th);
+    });
+
+    $('#light_06_state').change(function() {
+        if (($(this).val() == "on")) {
+            $("#light_06_int").prop("disabled", false);
+        } else {
+            $("#light_06_int").val("50");
+            $("#light_06_int").prop("disabled", true);
+        }
+    });
+
+    $('#light_07_state').change(function() {
+        if (($(this).val() == "on")) {
+            $("#light_07_int").prop("disabled", false);
+        } else {
+            $("#light_07_int").val("50");
+            $("#light_07_int").prop("disabled", true);
+        }
+    });
+
+
+
 
     $('#txtsub').click(function() {
         //alert('asdf');
@@ -12,7 +44,7 @@ $(document).ready(function() {
 
         $.get("/test.py?thresh="+option, function(data) {
             alert( "Data Loaded: ");*/
-        thresh = $("#thresh_val").val();
+        thresh = $("#thresh").val();
         //alert(thresh);
         if ($.isNumeric(thresh)) {
             $('#showthresh').val(thresh);
@@ -21,15 +53,21 @@ $(document).ready(function() {
         }
         
 
-        light_06_state = $("#light_06_state_val").val();
+        light_06_state = $("#light_06_state").val();
 
-        light_06_int = $("#light_06_int_val").val();
+        light_06_int = $("#light_06_int").val();
 
-        light_07_state = $("#light_07_state_val").val();
+        light_07_state = $("#light_07_state").val();
 
-        light_07_int = $("#light_07_int_val").val();
+        light_07_int = $("#light_07_int").val();
 
-        $.get("getValues.py?thresh=" + thresh + "&light_06_state=" + light_06_state + "&light_06_int=" + light_06_int + "&light_07_state=" + light_07_state + "&light_07_int=" + light_07_int);
+        $.post("/setvals",
+            {thresh: thresh,
+            light_06_state: light_06_state,
+            light_06_int: light_06_int,
+            light_07_state: light_07_state,
+            light_07_int: light_07_int
+        });
     });
 
     $('#realtime').click(function() {
@@ -137,7 +175,7 @@ $(document).ready(function() {
 
         };
                 init();
-                $('#showtime').val("Real time data");
+                //$('#showtime').val("Real time data");
                 chart_r = new Highcharts.Chart({
                     chart: {
                         renderTo: 'chart_hist',
@@ -170,8 +208,9 @@ $(document).ready(function() {
     $('#timeinterval').change(function() {
         /* setting currently changed option value to option variable */
         var option = $(this).find('option:selected').val();
+        var name = $(this).find('option:selected').attr("name");
         /* setting input box value to selected option value */
-        $('#showtime').val(option);
+        //$('#showtime').val(option);
 
 
             var datetime = [];
@@ -187,7 +226,6 @@ $(document).ready(function() {
             $.getJSON("?time="+option, function(data) {
             //data = data.split('/');
             //console.log(data[0]);
-
             $.each(data, function( index, value ) {
                 //console.log(value[0], value[1], value[2]);
                 timestamp = parseFloat(value[0])*1000 + 10800000;
@@ -215,7 +253,7 @@ $(document).ready(function() {
             type : 'spline'
             },
             title : {
-            text : 'Power consumption (past data)'
+            text : 'Power consumption (' + name + ')'
             },
             subtitle : {
             text : 'thesis'
