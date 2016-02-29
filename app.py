@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, flash, redirect, url_for
+from flask import Flask, render_template, request, flash
 from flask.ext.bootstrap import Bootstrap
 import MySQLdb
 import time
@@ -19,22 +19,25 @@ cur = db.cursor()
 def index():
     req = request.args.get('time', None)
     if req:
-        print req
-        cur.execute("""SELECT * FROM {} WHERE datetime >= (NOW() - INTERVAL {})""".format(SQL_TABLE, req))
+        cur.execute(
+            """SELECT * FROM {} WHERE datetime >= (NOW() - INTERVAL {})"""
+            .format(SQL_TABLE, req))
         data = cur.fetchall()
-        arr_send = [[str(time.mktime(i[0].timetuple())), str(int(i[1])), str(int(i[2]))]
-                    for i in data]
+        arr_send = [[str(time.mktime(row[0].timetuple())),
+                     str(int(row[1])),
+                     str(int(row[2]))]
+                    for row in data]
         data_send = json.dumps(arr_send)
-        #data_send = '/'.join(['/'.join(i) for i in arr_send])
         return data_send
     else:
-        flash('Current threshold: {}'.format(int(json.loads(init_gui())['thresh']))) 
-        return render_template('index.html', value=666)
+        flash(
+            'Current threshold: {}'
+            .format(int(json.loads(init_gui())['thresh'])))
+        return render_template('index.html')
 
 @app.route('/setvals', methods=['GET', 'POST'])
 def set_config():
     recv_conf = {key: val for key, val in request.form.items()}
-    print recv_conf
     with open('data/gui.conf', 'r') as f:
         prev_data = json.loads(f.read())
     if prev_data != recv_conf:
