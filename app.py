@@ -29,11 +29,10 @@ def index():
                     for row in data]
         data_send = json.dumps(arr_send)
         return data_send
-    else:
-        flash(
-            'Current threshold: {}'
-            .format(int(json.loads(init_gui())['thresh'])))
-        return render_template('index.html')
+    flash(
+        'Current threshold: {}'
+        .format(int(json.loads(init_gui())['thresh'])))
+    return render_template('index.html')
 
 @app.route('/setvals', methods=['GET', 'POST'])
 def set_config():
