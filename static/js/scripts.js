@@ -8,7 +8,7 @@ $(document).ready(function() {
         });
         th = init["thresh"]
         $("#thresh").prop("value", th);
-        $("#showthresh").val(th);
+        $("#showthresh").text(th);
         $("#showselect").val(th);
     });
 
@@ -47,7 +47,7 @@ $(document).ready(function() {
         thresh = $("#thresh").val();
         //alert(thresh);
         if ($.isNumeric(thresh)) {
-            $('#showthresh').val(thresh);
+            $('#showthresh').text(thresh);
         } else {
             thresh = "";
         }
@@ -72,8 +72,10 @@ $(document).ready(function() {
 
     $('#realtime').click(function() {
 
-        var MQTTbroker = 'broker.mqttdashboard.com';
-        var MQTTport = 8000;
+        //var MQTTbroker = 'broker.mqttdashboard.com';
+        //var MQTTport = 8000;
+        var MQTTbroker = '192.168.1.56';
+        var MQTTport = 9001;
         var MQTTsubTopic1 = 'thesis/power/08'; //works with wildcard # and + topics dynamically now
         var MQTTsubTopic2 = 'thesis/power/09'; //works with wildcard # and + topics dynamically now
         //settings END
@@ -122,10 +124,17 @@ $(document).ready(function() {
                 var y = dataTopics.indexOf(message.destinationName); //get the index no
                 
                 //create new data series for the chart
+                if (message.destinationName === 'thesis/power/09'){
+                    var color = '#EB6881';
+                }
+                else {
+                    var color;
+                }
                 var newseries = {
                         id: y,
                         name: message.destinationName,
-                        data: []
+                        data: [],
+                        color: color
                         };
 
                 chart_r.addSeries(newseries); //add the series
@@ -133,9 +142,10 @@ $(document).ready(function() {
                 };
             
             var y = dataTopics.indexOf(message.destinationName); //get the index no of the topic from the array
-            var myEpoch = new Date().getTime(); //get current epoch time
+            var myEpoch = new Date().getTime();
+            var timezone = new Date().getTimezoneOffset();
             var thenum = message.payloadString.replace( /^\D+/g, ''); //remove any text spaces from the message
-            var plotMqtt = [myEpoch, Number(thenum)]; //create the array
+            var plotMqtt = [myEpoch-timezone*60000, Number(thenum)]; //create the array
             if (isNumber(thenum)) { //check if it is a real number and not text
                 console.log('is a propper number, will send to chart.')
                 plot(plotMqtt, y);  //send it to the plot function
@@ -212,7 +222,6 @@ $(document).ready(function() {
         /* setting input box value to selected option value */
         //$('#showtime').val(option);
 
-
             var datetime = [];
             var sensor_one = [];
             var sensor_two = [];
@@ -226,9 +235,12 @@ $(document).ready(function() {
             $.getJSON("?time="+option, function(data) {
             //data = data.split('/');
             //console.log(data[0]);
+            timezone = new Date().getTimezoneOffset();
+            //console.log(timezone);
             $.each(data, function( index, value ) {
                 //console.log(value[0], value[1], value[2]);
-                timestamp = parseFloat(value[0])*1000 + 10800000;
+                //timestamp = parseFloat(value[0])*1000 + 10800000;
+                timestamp = parseFloat(value[0])*1000 - timezone*60*1000;
                 sensornum = value[1];
                 sensorval = parseFloat(value[2]);
                 if (sensornum == 8) {sensor_one.push({
@@ -291,7 +303,7 @@ $(document).ready(function() {
             marker : {
             radius : 4,
             lineColor : '#666666',
-            lineWidth : 1
+            lineWidth : 1,
             }
             }
             },
@@ -302,7 +314,8 @@ $(document).ready(function() {
             },{
 
             name : 'Sensor 09',
-            data : sensor_two
+            data : sensor_two,
+            color: '#EB6881'
 
             }]
             });
