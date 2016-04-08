@@ -36,7 +36,7 @@ def index():
     req = request.args.get('time', None)
     if req:
         print req
-        g.cur.execute("""SELECT * FROM %s WHERE datetime >= (NOW() - INTERVAL %s)""", (SQL_TABLE, req))
+        g.cur.execute("""SELECT * FROM {} WHERE datetime >= (NOW() - INTERVAL {})""".format(SQL_TABLE, req))
         data = g.cur.fetchall()
         arr_send = [[str(time.mktime(i[0].timetuple())), str(int(i[1])), str(int(i[2]))]
                     for i in data]

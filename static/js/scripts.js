@@ -74,7 +74,7 @@ $(document).ready(function() {
 
         //var MQTTbroker = 'broker.mqttdashboard.com';
         //var MQTTport = 8000;
-        var MQTTbroker = '192.168.1.56';
+        var MQTTbroker = '147.102.7.186';
         var MQTTport = 9001;
         var MQTTsubTopic1 = 'thesis/power/08'; //works with wildcard # and + topics dynamically now
         var MQTTsubTopic2 = 'thesis/power/09'; //works with wildcard # and + topics dynamically now
