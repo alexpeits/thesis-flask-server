@@ -36,14 +36,14 @@ def index():
     req = request.args.get('time', None)
     if req:
         print req
-        g.cur.execute("""SELECT * FROM {} WHERE datetime >= (NOW() - INTERVAL {})""".format(SQL_TABLE, req))
+        g.cur.execute("""SELECT * FROM %s WHERE datetime >= (NOW() - INTERVAL %s)""", (SQL_TABLE, req, ))
         data = g.cur.fetchall()
         arr_send = [[str(time.mktime(i[0].timetuple())), str(int(i[1])), str(int(i[2]))]
                     for i in data]
         data_send = json.dumps(arr_send)
         return data_send
     else:
-        flash('Current threshold: {}'.format(int(json.loads(init_gui())['thresh']))) 
+        flash('Current threshold: {}'.format(int(json.loads(init_gui())['thresh'])))
         return render_template('index.html', number=666)
 
 @app.route('/setvals', methods=['GET', 'POST'])
